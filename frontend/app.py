@@ -3,18 +3,18 @@ import os
 import logging
 import requests
 import streamlit as st
-from helpers import save_to_dir, get_jwt_token, upload_files_in_directory, query_corpus
+from helpers import save_to_dir, get_jwt_token, upload_files_in_directory, query_corpus, get_report_summary
 from dotenv import load_dotenv
 
 load_dotenv()
 
 CORPUS_ID = 6
-CUSTOMER_ID = st.secrets.get("CUSTOMER_ID", os.environ.get("CUSTOMER_ID"))
-API_KEY = st.secrets.get("API_KEY", os.environ.get("API_KEY"))
-AUTH_URL = st.secrets.get("AUTH_URL", os.environ.get("AUTH_URL"))
-APP_CLIENT_ID = st.secrets.get("APP_CLIENT_ID", os.environ.get("APP_CLIENT_ID"))
-APP_CLIENT_SECRET = st.secrets.get("APP_CLIENT_SECRET", os.environ.get("APP_CLIENT_SECRET"))
-IDX_ADDRESS = st.secrets.get("IDX_ADDRESS", os.environ.get("IDX_ADDRESS"))
+CUSTOMER_ID = os.environ.get("CUSTOMER_ID") or st.secrets["CUSTOMER_ID"]
+API_KEY = os.environ.get("API_KEY") or st.secrets["API_KEY"]
+AUTH_URL = os.environ.get("AUTH_URL") or st.secrets["AUTH_URL"]
+APP_CLIENT_ID = os.environ.get("APP_CLIENT_ID") or st.secrets["APP_CLIENT_ID"]
+APP_CLIENT_SECRET = os.environ.get("APP_CLIENT_SECRET") or st.secrets["APP_CLIENT_SECRET"]
+IDX_ADDRESS = os.environ.get("IDX_ADDRESS") or st.secrets["IDX_ADDRESS"]
 
 # Set up the Streamlit interface
 st.set_page_config(
@@ -146,8 +146,6 @@ elif selected_feature == "Upload new document":
 
     if uploaded_file is not None:
         file_path = save_to_dir(uploaded_file)
-        # Get the absolute path of the temp directory
-        # st.write(file_path)
 
         # Upload the file to vectara server
         upload_msg = upload_files_in_directory(
@@ -161,3 +159,7 @@ elif selected_feature == "Upload new document":
             st.success("File Uploaded Successfully")
         else:
             st.warning("Something went wrong, try again")
+
+        get_report_summary(uploaded_file)
+
+        
