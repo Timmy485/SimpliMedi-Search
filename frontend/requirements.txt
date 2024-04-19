@@ -1,2 +1,8 @@
 streamlit
 python-dotenv
+together
+PyPDF2
+python-docx
+streamlit-pdf-viewer
+openai
+
